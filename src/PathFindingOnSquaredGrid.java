@@ -71,20 +71,19 @@ public class PathFindingOnSquaredGrid {
                 cell[y][x] = new Node(y, x);
                 //Checks whether a cell is Blocked or Not by checking the boolean value
                 if (matrix[y][x]) {
-                    if (h == 1) {
-                        //Assigning the Chebyshev Heuristic value
-                        if (Math.abs(y - Bi) > Math.abs(x - Bj)) {
-                            cell[y][x].hValue = Math.abs(y - Bi);
-                        } else {
-                            cell[y][x].hValue = Math.abs(x - Bj);
-                        }
-                    } else if (h == 2) {
+//                    if (h == 1) {
+//                        //Assigning the Chebyshev Heuristic value
+//                        if (Math.abs(y - Bi) > Math.abs(x - Bj)) {
+//                            cell[y][x].hValue = Math.abs(y - Bi);
+//                        } else {
+//                            cell[y][x].hValue = Math.abs(x - Bj);
+//                        }
+
                         //Assigning the Euclidean Heuristic value
-                        cell[y][x].hValue = Math.sqrt(Math.pow(y - Bi, 2) + Math.pow(x - Bj, 2));
-                    } else if (h == 3) {
-                        //Assigning the Manhattan Heuristic value by calculating the absolute length (x+y) from the ending point to the starting point
-                        cell[y][x].hValue = Math.abs(y - Bi) + Math.abs(x - Bj);
-                    }
+                    cell[y][x].hValue = Math.sqrt(Math.pow(y - Bi, 2) + Math.pow(x - Bj, 2));// else if (h == 3) {
+//                        //Assigning the Manhattan Heuristic value by calculating the absolute length (x+y) from the ending point to the starting point
+//                        cell[y][x].hValue = Math.abs(y - Bi) + Math.abs(x - Bj);
+//                    }
                 } else {
                     //If the boolean value is false, then assigning -1 instead of the absolute length
                     cell[y][x].hValue = -1;
