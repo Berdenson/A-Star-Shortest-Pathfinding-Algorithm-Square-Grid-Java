@@ -57,3 +57,12 @@ Removing Math.sqrt() - 9 seconds
 Doubles to Ints - -0.5 seconds
 Changing Math.pow() to timesing the value by itself - +1 SECOND (WTF) (java has its Math class (probably) optimized to the moon and back for .pow())
 ```
+### Notes:
+The equation for finding the iterations to assign a heuristic to each value
+```
+N²
+```
+The equation for finding the iterations it takes to generate a path in the default settings
+```
+√(2N^2)
+```
