@@ -36,3 +36,24 @@ Euclidean Path - Black line
 
 <img src="http://i.imgur.com/tJH5BUp.png" width="350">
 
+# HI, I've made this thing run faster, here's dem notes bout it belorw
+
+A* Optimizations:
+
+### Settings:
+```
+N - 500
+Percolation - 1
+y1 - 0
+x1 - 0
+y2 - 499
+x2 - 499
+(This makes it travel a hypotenuse of 707.1 cm)
+```
+### Record of Improvements:
+```
+Regular - 18 seconds
+Removing Math.sqrt() - 9 seconds
+Doubles to Ints - -0.5 seconds
+Changing Math.pow() to timesing the value by itself - +1 SECOND (WTF) (java has its Math class (probably) optimized to the moon and back for .pow())
+```
