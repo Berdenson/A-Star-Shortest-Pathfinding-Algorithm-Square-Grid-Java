@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 /**
  * Created by Suwadith 2015214 on 3/28/2017.
+ * Made better by berdenson
  */
 
 
@@ -149,7 +150,7 @@ public class PathFindingOnSquaredGrid {
             System.out.println("Euclidean Path Found");
             System.out.println("Total Cost: " + gCost/10.0);
             /*System.out.println("Total fCost: " + fCost);*/
-            //StdOut.println("Elapsed time = " + timerFlow.elapsedTime());
+            System.out.println("Elapsed time = " + timerFlow.elapsedTime());
             gCost = 0;
             /*fCost = 0;*/
 
