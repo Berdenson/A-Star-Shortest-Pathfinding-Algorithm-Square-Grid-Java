@@ -63,6 +63,8 @@ public class PathFindingOnSquaredGrid {
      */
     public static void generateHValue(boolean matrix[][], int Ai, int Aj, int Bi, int Bj, int n, int v, int d, boolean additionalPath, int h) {
 
+        Stopwatch heuristicTimer = new Stopwatch();
+
         for (int y = 0; y < matrix.length; y++) {
             for (int x = 0; x < matrix.length; x++) {
                 //Creating a new Node object for each and every Cell of the Grid (Matrix)
@@ -90,6 +92,9 @@ public class PathFindingOnSquaredGrid {
                 }
             }
         }
+
+        System.out.println("Heuristic Generation Time: " + heuristicTimer.elapsedTime());
+
         generatePath(cell, Ai, Aj, Bi, Bj, n, v, d, additionalPath);
     }
 
@@ -173,6 +178,8 @@ public class PathFindingOnSquaredGrid {
      * @param additionalPath Boolean to decide whether to calculate the cost of through the diagonal path
      */
     public static void generatePath(Node hValue[][], int Ai, int Aj, int Bi, int Bj, int n, int v, int d, boolean additionalPath) {
+
+        Stopwatch generatePathTimer = new Stopwatch();
 
         //Creation of a PriorityQueue and the declaration of the Comparator
         PriorityQueue<Node> openList = new PriorityQueue<>(11, new Comparator() {
@@ -369,7 +376,7 @@ public class PathFindingOnSquaredGrid {
         //Clears the openList
         openList.clear();
 
-        System.out.println();
+        System.out.println("Time to generate path: " + generatePathTimer.elapsedTime());
 
     }
 
