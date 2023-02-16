@@ -47,15 +47,7 @@ public class PathFindingOnSquaredGrid {
 //                else StdDraw.filledSquare(j, N - i - 1, .5);
 //    }
 
-    // return a random N-by-N boolean matrix, where each entry is
-    // true with probability p
-    public static boolean[][] random(int N, double p) {
-        boolean[][] a = new boolean[N][N];
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
-                a[i][j] = StdRandom.bernoulli(p);
-        return a;
-    }
+
 
     /**
      * @param matrix         The boolean matrix that the framework generates
@@ -112,7 +104,7 @@ public class PathFindingOnSquaredGrid {
         /*int fCost = 0;*/
 
         //Generating a new Boolean Matrix according to the input values of n and p (Length, Percolation value)
-        boolean[][] randomlyGenMatrix = random(n, p);
+        boolean[][] randomlyGenMatrix = Utils.randomField(n,n, p);
 
         //StdArrayIO.print(randomlyGenMatrix);
 //        show(randomlyGenMatrix, true); asdfffffffffffffffffffffffffff
