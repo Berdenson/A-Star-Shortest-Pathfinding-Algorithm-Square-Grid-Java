@@ -18,7 +18,7 @@ public class PathFindingOnSquaredGrid {
     static ArrayList<Node> pathList = new ArrayList<>();
     static ArrayList<Node> closedList = new ArrayList<>();
     static boolean additionalPath = false;
-    public static boolean[][] grid = new boolean[100][200];
+    public static boolean[][] grid = new boolean[200][100];
 
     // draw the N-by-N boolean matrix to standard draw
 //    public static void show(boolean[][] a, boolean which) {
@@ -50,16 +50,15 @@ public class PathFindingOnSquaredGrid {
 
     // return a random N-by-N boolean matrix, where each entry is
     // true with probability p
-    public static void generateNoNoZones(int startX, int startY, int endX, int endY) {
-        for (int x=startX; x<=endX; x++) {
-            for (int y=startY; y<=endY; y++) {
-                grid[y][x] = false;
+    public static void generateNoNoZone(int startX, int startY, int endX, int endY) {
+        for (int y=startY; y<=endY; y++) {
+            for (int x=startX; x<=endX; x++) {
+                grid[y][x] = true;
             }
         }
     }
 
     /**
-     * @param matrix         The boolean matrix that the framework generates
      * @param Ai             Starting point's x value
      * @param Aj             Starting point's y value
      * @param Bi             Ending point's x value
@@ -69,14 +68,14 @@ public class PathFindingOnSquaredGrid {
      * @param additionalPath Boolean to decide whether to calculate the cost of through the diagonal path
      * @param h              int value which decides the correct method to choose to calculate the Heuristic value
      */
-    public static void generateHValue(boolean matrix[][], int Ai, int Aj, int Bi, int Bj, int width, int length, int v, int d, boolean additionalPath, int h) {
+    public static void generateHValue(int Ai, int Aj, int Bi, int Bj, int width, int length, int v, int d, boolean additionalPath, int h) {
 
         for (int y = 0; y < length; y++) {
             for (int x = 0; x < width; x++) {
                 //Creating a new Node object for each and every Cell of the Grid (Matrix)
                 cell[y][x] = new Node(y, x);
                 //Checks whether a cell is Blocked or Not by checking the boolean value
-                if (matrix[y][x]) {
+                if (!grid[y][x]) {
                     if (h == 1) {
                         //Assigning the Chebyshev Heuristic value
                         if (Math.abs(y - Bi) > Math.abs(x - Bj)) {
@@ -112,7 +111,8 @@ public class PathFindingOnSquaredGrid {
         /*int fCost = 0;*/
 
         //Generating a new Boolean Matrix according to the input values of n and p (Length, Percolation value)
-        boolean[][] randomlyGenMatrix = random(width, length, p);
+        generateNoNoZone(5,5 ,10,10 );
+        generateNoNoZone(15,15 ,20,20 );
 
         //StdArrayIO.print(randomlyGenMatrix);
 //        show(randomlyGenMatrix, true); asdfffffffffffffffffffffffffff
@@ -139,7 +139,7 @@ public class PathFindingOnSquaredGrid {
             if (j == 0) {
                 timerFlow = new Stopwatch();
                 //Method to generate Chebyshev path. Both Horizontal and Diagonal pathways are possible.
-                generateHValue(randomlyGenMatrix, Ai, Aj, Bi, Bj, width, length, 10, 10, true, 1);
+                generateHValue(Ai, Aj, Bi, Bj, width, length, 10, 10, true, 1);
 
                 //Checks whether the end point has been reach (Stored in the pathList)
                 if (cell[Ai][Aj].hValue!=-1&&pathList.contains(cell[Bi][Bj])) {
@@ -178,7 +178,7 @@ public class PathFindingOnSquaredGrid {
 
             if (j == 1) {
                 timerFlow = new Stopwatch();
-                generateHValue(randomlyGenMatrix, Ai, Aj, Bi, Bj, width, length, 10, 14, true, 2);
+                generateHValue(Ai, Aj, Bi, Bj, width, length, 10, 14, true, 2);
 
                 if (cell[Ai][Aj].hValue!=-1&&pathList.contains(cell[Bi][Bj])) {
                     StdDraw.setPenColor(Color.BLACK);
@@ -212,7 +212,7 @@ public class PathFindingOnSquaredGrid {
 
             if (j == 2) {
                 timerFlow = new Stopwatch();
-                generateHValue(randomlyGenMatrix, Ai, Aj, Bi, Bj, width, length, 10, 10, false, 3);
+                generateHValue(Ai, Aj, Bi, Bj, width, length, 10, 10, false, 3);
 
                 if (cell[Ai][Aj].hValue!=-1&&pathList.contains(cell[Bi][Bj])) {
                     StdDraw.setPenColor(Color.orange);
