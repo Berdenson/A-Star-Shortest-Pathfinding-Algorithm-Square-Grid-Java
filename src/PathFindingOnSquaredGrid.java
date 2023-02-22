@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Arrays;
 
 
 /**
  * Created by Suwadith 2015214 on 3/28/2017.
- * Made better by berdenson
  */
 
 
@@ -18,6 +18,7 @@ public class PathFindingOnSquaredGrid {
     static ArrayList<Node> pathList = new ArrayList<>();
     static ArrayList<Node> closedList = new ArrayList<>();
     static boolean additionalPath = false;
+    public static boolean[][] grid = new boolean[100][200];
 
     // draw the N-by-N boolean matrix to standard draw
 //    public static void show(boolean[][] a, boolean which) {
@@ -47,7 +48,15 @@ public class PathFindingOnSquaredGrid {
 //                else StdDraw.filledSquare(j, N - i - 1, .5);
 //    }
 
-
+    // return a random N-by-N boolean matrix, where each entry is
+    // true with probability p
+    public static void generateNoNoZones(int startX, int startY, int endX, int endY) {
+        for (int x=startX; x<=endX; x++) {
+            for (int y=startY; y<=endY; y++) {
+                grid[y][x] = false;
+            }
+        }
+    }
 
     /**
      * @param matrix         The boolean matrix that the framework generates
@@ -55,67 +64,61 @@ public class PathFindingOnSquaredGrid {
      * @param Aj             Starting point's y value
      * @param Bi             Ending point's x value
      * @param Bj             Ending point's y value
-     * @param n              Length of one side of the matrix
      * @param v              Cost between 2 cells located horizontally or vertically next to each other
      * @param d              Cost between 2 cells located Diagonally next to each other
      * @param additionalPath Boolean to decide whether to calculate the cost of through the diagonal path
      * @param h              int value which decides the correct method to choose to calculate the Heuristic value
      */
-    public static void generateHValue(boolean matrix[][], int Ai, int Aj, int Bi, int Bj, int n, int v, int d, boolean additionalPath, int h) {
+    public static void generateHValue(boolean matrix[][], int Ai, int Aj, int Bi, int Bj, int width, int length, int v, int d, boolean additionalPath, int h) {
 
-        Stopwatch heuristicTimer = new Stopwatch();
-
-        for (int y = 0; y < matrix.length; y++) {
-            for (int x = 0; x < matrix.length; x++) {
+        for (int y = 0; y < length; y++) {
+            for (int x = 0; x < width; x++) {
                 //Creating a new Node object for each and every Cell of the Grid (Matrix)
                 cell[y][x] = new Node(y, x);
                 //Checks whether a cell is Blocked or Not by checking the boolean value
                 if (matrix[y][x]) {
-//                    if (h == 1) {
-//                        //Assigning the Chebyshev Heuristic value
-//                        if (Math.abs(y - Bi) > Math.abs(x - Bj)) {
-//                            cell[y][x].hValue = Math.abs(y - Bi);
-//                        } else {
-//                            cell[y][x].hValue = Math.abs(x - Bj);
-//                        }
-
-                    //Assigning the Euclidean Heuristic value
-//                    cell[y][x].hValue = (y - Bi) * (y - Bi) + (x - Bj) * (x - Bj);
-                    cell[y][x].hValue = (int) ( Math.pow((y - Bi), 2) + Math.pow((x - Bj), 2));
-                    // else if (h == 3) {
-//                        //Assigning the Manhattan Heuristic value by calculating the absolute length (x+y) from the ending point to the starting point
-//                        cell[y][x].hValue = Math.abs(y - Bi) + Math.abs(x - Bj);
-//                    }
+                    if (h == 1) {
+                        //Assigning the Chebyshev Heuristic value
+                        if (Math.abs(y - Bi) > Math.abs(x - Bj)) {
+                            cell[y][x].hValue = Math.abs(y - Bi);
+                        } else {
+                            cell[y][x].hValue = Math.abs(x - Bj);
+                        }
+                    } else if (h == 2) {
+                        //Assigning the Euclidean Heuristic value
+                        cell[y][x].hValue = (int) (Math.pow(y - Bi, 2) + Math.pow(x - Bj, 2));
+                    } else if (h == 3) {
+                        //Assigning the Manhattan Heuristic value by calculating the absolute length (x+y) from the ending point to the starting point
+                        cell[y][x].hValue = Math.abs(y - Bi) + Math.abs(x - Bj);
+                    }
                 } else {
                     //If the boolean value is false, then assigning -1 instead of the absolute length
                     cell[y][x].hValue = -1;
                 }
             }
         }
-
-        System.out.println("Heuristic Generation Time: " + heuristicTimer.elapsedTime());
-
-        generatePath(cell, Ai, Aj, Bi, Bj, n, v, d, additionalPath);
+        generatePath(cell, Ai, Aj, Bi, Bj, width, length, v, d, additionalPath);
     }
-
 
     public static void menu() {
         Scanner in = new Scanner(System.in);
-        System.out.println("Please choose N(Grid Size): ");
-        int n = in.nextInt();
+        System.out.println("Please choose x(Grid Horizontal): ");
+        int width  = in.nextInt();
+        System.out.println("Please choose y(Grid Vertical): ");
+        int length = in.nextInt();
         System.out.println("Please choose Obstacle ratio: ");
         double p = in.nextDouble();
         int gCost = 0;
         /*int fCost = 0;*/
 
         //Generating a new Boolean Matrix according to the input values of n and p (Length, Percolation value)
-        boolean[][] randomlyGenMatrix = Utils.randomField(n,n, p);
+        boolean[][] randomlyGenMatrix = random(width, length, p);
 
         //StdArrayIO.print(randomlyGenMatrix);
 //        show(randomlyGenMatrix, true); asdfffffffffffffffffffffffffff
 
         //Creation of a Node type 2D array
-        cell = new Node[randomlyGenMatrix.length][randomlyGenMatrix.length];
+        cell = new Node[length][width];
 
         System.out.println("Enter y1: ");
         int Ai = in.nextInt();
@@ -128,39 +131,119 @@ public class PathFindingOnSquaredGrid {
 
 //        show(randomlyGenMatrix, true, Ai, Aj, Bi, Bj); asdffffffffffffffffff
 
+        Stopwatch timerFlow = null;
 
-        Stopwatch timerFlow = new Stopwatch();
-        generateHValue(randomlyGenMatrix, Ai, Aj, Bi, Bj, n, 10, 14, true, 2);
+        //Loop to find all 3 pathways and their relative Final Cost values
+        for (int j = 0; j < 3; j++) {
 
-        if (cell[Ai][Aj].hValue!=-1&&pathList.contains(cell[Bi][Bj])) {
-            //StdDraw.setPenColor(Color.BLACK);
-            //StdDraw.setPenRadius(0.015);
+            if (j == 0) {
+                timerFlow = new Stopwatch();
+                //Method to generate Chebyshev path. Both Horizontal and Diagonal pathways are possible.
+                generateHValue(randomlyGenMatrix, Ai, Aj, Bi, Bj, width, length, 10, 10, true, 1);
 
-            for (int i = 0; i < pathList.size() - 1; i++) {
-                /* System.out.println(pathList.get(i).x + " " + pathList.get(i).y);*/
-                /*StdDraw.circle(pathList.get(i).y, n - pathList.get(i).x - 1, .4);*/
-                //StdDraw.line(pathList.get(i).y, n - 1 - pathList.get(i).x, pathList.get(i + 1).y, n - 1 - pathList.get(i + 1).x);
-                gCost += pathList.get(i).gValue;
-                /*fCost += pathList.get(i).fValue;*/
+                //Checks whether the end point has been reach (Stored in the pathList)
+                if (cell[Ai][Aj].hValue!=-1&&pathList.contains(cell[Bi][Bj])) {
+                    StdDraw.setPenColor(Color.RED);
+                    /*StdDraw.setPenRadius(0.006);*/
+
+                    //Draws the path
+                    for (int i = 0; i < pathList.size(); i++) {
+                        /*System.out.println(pathList.get(i).x + " " + pathList.get(i).y);*/
+//                        StdDraw.filledSquare(pathList.get(i).y, n - pathList.get(i).x - 1, .5);
+                        /*StdDraw.line(pathList.get(i).y, n - 1 - pathList.get(i).x, pathList.get(i + 1).y, n - 1 - pathList.get(i + 1).x);*/
+                        //Adds the gValue of each and every Node object that's stored in the pathList
+                        gCost += pathList.get(i).gValue;
+                        /*fCost += pathList.get(i).fValue;*/
+                    }
+
+                    System.out.println("Chebyshev Path Found");
+                    System.out.println("Total Cost: " + gCost/10.0);
+                    /*System.out.println("Total fCost: " + fCost);*/
+                    StdOut.println("Elapsed time = " + timerFlow.elapsedTime());
+                    gCost = 0;
+                    /*fCost = 0;*/
+
+                } else {
+
+                    System.out.println("Chebyshev Path Not found");
+                    StdOut.println("Elapsed time = " + timerFlow.elapsedTime());
+
+                }
+
+                //Clears Both the pathList and the closedList
+                pathList.clear();
+                closedList.clear();
             }
 
-            System.out.println("Euclidean Path Found");
-            System.out.println("Total Cost: " + gCost/10.0);
-            /*System.out.println("Total fCost: " + fCost);*/
-            System.out.println("Elapsed time = " + timerFlow.elapsedTime());
-            gCost = 0;
-            /*fCost = 0;*/
 
-        } else {
+            if (j == 1) {
+                timerFlow = new Stopwatch();
+                generateHValue(randomlyGenMatrix, Ai, Aj, Bi, Bj, width, length, 10, 14, true, 2);
 
-            System.out.println("Euclidean Path Not found");
-            StdOut.println("Elapsed time = " + timerFlow.elapsedTime());
+                if (cell[Ai][Aj].hValue!=-1&&pathList.contains(cell[Bi][Bj])) {
+                    StdDraw.setPenColor(Color.BLACK);
+                    StdDraw.setPenRadius(0.015);
 
+                    for (int i = 0; i < pathList.size() - 1; i++) {
+                        /* System.out.println(pathList.get(i).x + " " + pathList.get(i).y);*/
+                        /*StdDraw.circle(pathList.get(i).y, n - pathList.get(i).x - 1, .4);*/
+//                        StdDraw.line(pathList.get(i).y, n - 1 - pathList.get(i).x, pathList.get(i + 1).y, n - 1 - pathList.get(i + 1).x);
+                        gCost += pathList.get(i).gValue;
+                        /*fCost += pathList.get(i).fValue;*/
+                    }
+
+                    System.out.println("Euclidean Path Found");
+                    System.out.println("Total Cost: " + gCost/10.0);
+                    /*System.out.println("Total fCost: " + fCost);*/
+                    StdOut.println("Elapsed time = " + timerFlow.elapsedTime());
+                    gCost = 0;
+                    /*fCost = 0;*/
+
+                } else {
+
+                    System.out.println("Euclidean Path Not found");
+                    StdOut.println("Elapsed time = " + timerFlow.elapsedTime());
+
+                }
+
+                pathList.clear();
+                closedList.clear();
+            }
+
+            if (j == 2) {
+                timerFlow = new Stopwatch();
+                generateHValue(randomlyGenMatrix, Ai, Aj, Bi, Bj, width, length, 10, 10, false, 3);
+
+                if (cell[Ai][Aj].hValue!=-1&&pathList.contains(cell[Bi][Bj])) {
+                    StdDraw.setPenColor(Color.orange);
+                    StdDraw.setPenRadius(0.006);
+
+                    for (int i = 0; i < pathList.size() - 1; i++) {
+                        /*System.out.println(pathList.get(i).x + " " + pathList.get(i).y);*/
+                        /*StdDraw.filledCircle(pathList.get(i).y, n - pathList.get(i).x - 1, .2);*/
+//                        StdDraw.line(pathList.get(i).y, n - 1 - pathList.get(i).x, pathList.get(i + 1).y, n - 1 - pathList.get(i + 1).x);
+                        gCost += pathList.get(i).gValue;
+                        /*fCost += pathList.get(i).fValue;*/
+                    }
+
+                    System.out.println("Manhattan Path Found");
+                    System.out.println("Total Cost: " + gCost/10.0);
+                    /*System.out.println("Total fCost: " + fCost);*/
+                    StdOut.println("Elapsed time = " + timerFlow.elapsedTime());
+                    gCost = 0;
+                    /*fCost = 0;*/
+
+                } else {
+
+                    System.out.println("Manhattan Path Not found");
+                    StdOut.println("Elapsed time = " + timerFlow.elapsedTime());
+
+                }
+
+                pathList.clear();
+                closedList.clear();
+            }
         }
-
-        pathList.clear();
-        closedList.clear();
-
 
     }
 
@@ -172,15 +255,13 @@ public class PathFindingOnSquaredGrid {
      * @param Aj             Starting point's x value
      * @param Bi             Ending point's y value
      * @param Bj             Ending point's x value
-     * @param n              Length of one side of the matrix
      * @param v              Cost between 2 cells located horizontally or vertically next to each other
      * @param d              Cost between 2 cells located Diagonally next to each other
      * @param additionalPath Boolean to decide whether to calculate the cost of through the diagonal path
      */
-    public static void generatePath(Node hValue[][], int Ai, int Aj, int Bi, int Bj, int n, int v, int d, boolean additionalPath) {
+    public static void generatePath(Node hValue[][], int Ai, int Aj, int Bi, int Bj, int width, int length, int v, int d, boolean additionalPath) {
 
-        Stopwatch generatePathTimer = new Stopwatch();
-
+        Stopwatch timer = new Stopwatch();
         //Creation of a PriorityQueue and the declaration of the Comparator
         PriorityQueue<Node> openList = new PriorityQueue<>(11, new Comparator() {
             @Override
@@ -190,10 +271,12 @@ public class PathFindingOnSquaredGrid {
                         ((Node) cell1).fValue > ((Node) cell2).fValue ? 1 : 0;
             }
         });
+        System.out.println("DA PQ TIME: " + timer.elapsedTime());
 
         //Adds the Starting cell inside the openList
         openList.add(cell[Ai][Aj]);
 
+        Stopwatch bigboiTimer = new Stopwatch();
         //Executes the rest if there are objects left inside the PriorityQueue
         while (true) {
 
@@ -215,7 +298,7 @@ public class PathFindingOnSquaredGrid {
             closedList.add(node);
 
             //Left Cell
-            try {
+            if (node.y != 0) {
                 if (cell[node.x][node.y - 1].hValue != -1
                         && !openList.contains(cell[node.x][node.y - 1])
                         && !closedList.contains(cell[node.x][node.y - 1])) {
@@ -228,11 +311,10 @@ public class PathFindingOnSquaredGrid {
                     openList.add(cell[node.x][node.y - 1]);
                     cell[node.x][node.y - 1].parent = node;
                 }
-            } catch (IndexOutOfBoundsException e) {
             }
 
             //Right Cell
-            try {
+            if (node.y != width-1) {
                 if (cell[node.x][node.y + 1].hValue != -1
                         && !openList.contains(cell[node.x][node.y + 1])
                         && !closedList.contains(cell[node.x][node.y + 1])) {
@@ -245,11 +327,10 @@ public class PathFindingOnSquaredGrid {
                     openList.add(cell[node.x][node.y + 1]);
                     cell[node.x][node.y + 1].parent = node;
                 }
-            } catch (IndexOutOfBoundsException e) {
             }
 
             //Bottom Cell
-            try {
+            if (cell[node.x][node.y].x != length-1) {
                 if (cell[node.x + 1][node.y].hValue != -1
                         && !openList.contains(cell[node.x + 1][node.y])
                         && !closedList.contains(cell[node.x + 1][node.y])) {
@@ -262,11 +343,10 @@ public class PathFindingOnSquaredGrid {
                     openList.add(cell[node.x + 1][node.y]);
                     cell[node.x + 1][node.y].parent = node;
                 }
-            } catch (IndexOutOfBoundsException e) {
             }
 
             //Top Cell
-            try {
+            if (cell[node.x][node.y].x != 0) {
                 if (cell[node.x - 1][node.y].hValue != -1
                         && !openList.contains(cell[node.x - 1][node.y])
                         && !closedList.contains(cell[node.x - 1][node.y])) {
@@ -279,13 +359,12 @@ public class PathFindingOnSquaredGrid {
                     openList.add(cell[node.x - 1][node.y]);
                     cell[node.x - 1][node.y].parent = node;
                 }
-            } catch (IndexOutOfBoundsException e) {
             }
 
             if (additionalPath) {
 
                 //TopLeft Cell
-                try {
+                if (cell[node.x][node.y].x != 0 && cell[node.x][node.y].y != 0) {
                     if (cell[node.x - 1][node.y - 1].hValue != -1
                             && !openList.contains(cell[node.x - 1][node.y - 1])
                             && !closedList.contains(cell[node.x - 1][node.y - 1])) {
@@ -298,11 +377,10 @@ public class PathFindingOnSquaredGrid {
                         openList.add(cell[node.x - 1][node.y - 1]);
                         cell[node.x - 1][node.y - 1].parent = node;
                     }
-                } catch (IndexOutOfBoundsException e) {
                 }
 
                 //TopRight Cell
-                try {
+                if (cell[node.x][node.y].x != 0 && cell[node.x][node.y].y != width - 1) {
                     if (cell[node.x - 1][node.y + 1].hValue != -1
                             && !openList.contains(cell[node.x - 1][node.y + 1])
                             && !closedList.contains(cell[node.x - 1][node.y + 1])) {
@@ -315,11 +393,10 @@ public class PathFindingOnSquaredGrid {
                         openList.add(cell[node.x - 1][node.y + 1]);
                         cell[node.x - 1][node.y + 1].parent = node;
                     }
-                } catch (IndexOutOfBoundsException e) {
                 }
 
                 //BottomLeft Cell
-                try {
+                if (cell[node.x][node.y].x != length - 1 && cell[node.x][node.y].y != 0) {
                     if (cell[node.x + 1][node.y - 1].hValue != -1
                             && !openList.contains(cell[node.x + 1][node.y - 1])
                             && !closedList.contains(cell[node.x + 1][node.y - 1])) {
@@ -332,11 +409,10 @@ public class PathFindingOnSquaredGrid {
                         openList.add(cell[node.x + 1][node.y - 1]);
                         cell[node.x + 1][node.y - 1].parent = node;
                     }
-                } catch (IndexOutOfBoundsException e) {
                 }
 
                 //BottomRight Cell
-                try {
+                if (cell[node.x][node.y].x != length - 1 && cell[node.x][node.y].y != width - 1) {
                     if (cell[node.x + 1][node.y + 1].hValue != -1
                             && !openList.contains(cell[node.x + 1][node.y + 1])
                             && !closedList.contains(cell[node.x + 1][node.y + 1])) {
@@ -349,10 +425,11 @@ public class PathFindingOnSquaredGrid {
                         openList.add(cell[node.x + 1][node.y + 1]);
                         cell[node.x + 1][node.y + 1].parent = node;
                     }
-                } catch (IndexOutOfBoundsException e) {
                 }
             }
         }
+
+        System.out.println("AGH" + bigboiTimer.elapsedTime());
 
         /*for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
@@ -376,7 +453,7 @@ public class PathFindingOnSquaredGrid {
         //Clears the openList
         openList.clear();
 
-        System.out.println("Time to generate path: " + generatePathTimer.elapsedTime());
+        System.out.println();
 
     }
 
