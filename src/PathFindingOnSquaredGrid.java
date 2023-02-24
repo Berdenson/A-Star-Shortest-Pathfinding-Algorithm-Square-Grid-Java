@@ -18,7 +18,7 @@ public class PathFindingOnSquaredGrid {
     static ArrayList<Node> pathList = new ArrayList<>();
     static ArrayList<Node> closedList = new ArrayList<>();
     static boolean additionalPath = false;
-    public static boolean[][] grid = new boolean[200][100];
+    public static boolean[][] grid = new boolean[100][200];
 
     // draw the N-by-N boolean matrix to standard draw
 //    public static void show(boolean[][] a, boolean which) {
