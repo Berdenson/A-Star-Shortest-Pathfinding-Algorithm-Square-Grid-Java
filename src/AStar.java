@@ -17,8 +17,10 @@ import java.util.concurrent.atomic.AtomicReference;
 /** A* class, used to generate a path for the trajectory. */
 public class AStar {
     /** The map of nodes */
-    private static Node[][] cell = new Node[Constants.AStar.FIELD_Y * 2][Constants.AStar.FIELD_X * 2];
+    private Node[][] cell = new Node[Constants.AStar.FIELD_Y * 2][Constants.AStar.FIELD_X * 2];
     /** Likely the path */
+    // creates nodes for cell
+
     private ArrayList<Node> pathList = new ArrayList<>();
     /** Nodes that no longer need to be aknowledged by the pathfinder */
     private ArrayList<Node> closedList = new ArrayList<>();
@@ -39,15 +41,9 @@ public class AStar {
     public int endX;
 
     static {
-        // creates nodes for cell
-        for (int i = 0; i < Constants.AStar.FIELD_Y * 2; i++) {
-            for (int j = 0; j < Constants.AStar.FIELD_X * 2; j++) {
-                cell[i][j] = new Node(i, j);
-            }
-        }
         // creates the boolean obstacle matrix
         // TODO: Inputs the obstacles for the field (nonosquares), input your nono squares here.
-        generateNoNoZone(69, 420, 69, 420); /* placeholder/example */
+//        generateNoNoZone(69, 420, 69, 420); /* placeholder/example */
     }
 
     /** Creates a new pathfinding situation. Input should be in centimeters. */
@@ -56,6 +52,11 @@ public class AStar {
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
+        for (int i = 0; i < Constants.AStar.FIELD_Y * 2; i++) {
+            for (int j = 0; j < Constants.AStar.FIELD_X * 2; j++) {
+                cell[i][j] = new Node(i, j);
+            }
+        }
     }
 
     /**
@@ -157,8 +158,8 @@ public class AStar {
             int v,
             int d) {
 
-        for (int i = 0; i < Constants.AStar.FIELD_Y; i++) {
-            for (int j = 0; j < Constants.AStar.FIELD_X; j++) {
+        for (int i = 0; i < Constants.AStar.FIELD_Y * 2; i++) {
+            for (int j = 0; j < Constants.AStar.FIELD_X * 2; j++) {
                 // Checks whether a cell is Blocked or Not by checking the boolean value (true if obstacle
                 // absent)
                 if (!matrix[i][j]) {
@@ -172,7 +173,7 @@ public class AStar {
             }
         }
         return generatePath(
-                cell, startY, startX, endY, endX, Constants.AStar.FIELD_X, Constants.AStar.FIELD_Y, v, d);
+                cell, startY, startX, endY, endX, Constants.AStar.FIELD_X * 2, Constants.AStar.FIELD_Y * 2, v, d);
     }
 
     /**
@@ -231,6 +232,9 @@ public class AStar {
             }
 
             closedList.add(node);
+
+            System.out.println("this thing" + node.getX() + ", " + node.getY());
+
 
             // Left Cell
             if (node.getY() != 0) {
