@@ -47,7 +47,7 @@ public class AStar {
         }
         // creates the boolean obstacle matrix
         // TODO: Inputs the obstacles for the field (nonosquares), input your nono squares here.
-//        generateNoNoZone(69, 420, 69, 420); /* placeholder/example */
+        generateNoNoZone(69, 420, 69, 420); /* placeholder/example */
     }
 
     /** Creates a new pathfinding situation. Input should be in centimeters. */
@@ -159,7 +159,6 @@ public class AStar {
 
         for (int i = 0; i < Constants.AStar.FIELD_Y; i++) {
             for (int j = 0; j < Constants.AStar.FIELD_X; j++) {
-
                 // Checks whether a cell is Blocked or Not by checking the boolean value (true if obstacle
                 // absent)
                 if (!matrix[i][j]) {
@@ -353,7 +352,8 @@ public class AStar {
             }
 
             // BottomRight Cell
-            if (node.getX() != Constants.AStar.FIELD_Y * 2 - 1 && node.getY() != Constants.AStar.FIELD_X * 2 - 1) {
+            if (node.getX() != Constants.AStar.FIELD_Y * 2 - 1
+                    && node.getY() != Constants.AStar.FIELD_X * 2 - 1) {
                 if (cell[node.getX() + 1][node.getY() + 1].hValue != -1
                         && !openList.contains(cell[node.getX() + 1][node.getY() + 1])
                         && !closedList.contains(cell[node.getX() + 1][node.getY() + 1])) {
@@ -403,10 +403,10 @@ public class AStar {
      * A NoNoZone is a obstacle. Obstacle is in rectangle form. originX/originY is the topleft origin
      * of the rectangle; width/length is the size of the rectangle
      *
-     * @param originX - the starting x point (origin) of the obstacle
      * @param originY - the starting y point (origin) of the obstacle
-     * @param width - the width (x wise) of the rectangle relative to the origin
+     * @param originX - the starting x point (origin) of the obstacle
      * @param length - the length (y wise) of the rectangle relative to the origin
+     * @param width - the width (x wise) of the rectangle relative to the origin
      */
     private static void generateNoNoZone(int originY, int originX, int length, int width) {
         for (int y = originY; y <= originY + length; y++) {
