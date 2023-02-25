@@ -47,7 +47,7 @@ public class AStar {
         }
         // creates the boolean obstacle matrix
         // TODO: Inputs the obstacles for the field (nonosquares), input your nono squares here.
-        generateNoNoZone(69, 420, 69, 420); /* placeholder/example */
+//        generateNoNoZone(69, 420, 69, 420); /* placeholder/example */
     }
 
     /** Creates a new pathfinding situation. Input should be in centimeters. */
@@ -162,7 +162,7 @@ public class AStar {
 
                 // Checks whether a cell is Blocked or Not by checking the boolean value (true if obstacle
                 // absent)
-                if (matrix[i][j]) {
+                if (!matrix[i][j]) {
                     // Assigning the Euclidean Heuristic value
                     cell[i][j].hValue = (int) (Math.pow(i - endY, 2) + Math.pow(j - endX, 2));
                 } else {
