@@ -6,4 +6,10 @@ public class Utils {
                 a[i][j] = StdRandom.bernoulli(p);
         return a;
     }
+    public static void printMem(){
+        System.out.println("KB: " + (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024);
+    }
+    public static double getUsedMem() {
+        return (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024;
+    }
 }

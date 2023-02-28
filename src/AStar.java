@@ -17,10 +17,8 @@ import java.util.concurrent.atomic.AtomicReference;
 /** A* class, used to generate a path for the trajectory. */
 public class AStar {
     /** The map of nodes */
-    private Node[][] cell = new Node[Constants.AStar.FIELD_Y * 2][Constants.AStar.FIELD_X * 2];
+    private static Node[][] cell = new Node[Constants.AStar.FIELD_Y * 2][Constants.AStar.FIELD_X * 2];
     /** Likely the path */
-    // creates nodes for cell
-
     private ArrayList<Node> pathList = new ArrayList<>();
     /** Nodes that no longer need to be aknowledged by the pathfinder */
     private ArrayList<Node> closedList = new ArrayList<>();
@@ -41,9 +39,15 @@ public class AStar {
     public int endX;
 
     static {
+        // creates nodes for cell
+        for (int i = 0; i < Constants.AStar.FIELD_Y * 2; i++) {
+            for (int j = 0; j < Constants.AStar.FIELD_X * 2; j++) {
+                cell[i][j] = new Node(i, j);
+            }
+        }
         // creates the boolean obstacle matrix
         // TODO: Inputs the obstacles for the field (nonosquares), input your nono squares here.
-//        generateNoNoZone(69, 420, 69, 420); /* placeholder/example */
+        generateNoNoZone(10, 15, 10, 15); /* placeholder/example */
     }
 
     /** Creates a new pathfinding situation. Input should be in centimeters. */
@@ -52,11 +56,6 @@ public class AStar {
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
-        for (int i = 0; i < Constants.AStar.FIELD_Y * 2; i++) {
-            for (int j = 0; j < Constants.AStar.FIELD_X * 2; j++) {
-                cell[i][j] = new Node(i, j);
-            }
-        }
     }
 
     /**
@@ -118,8 +117,8 @@ public class AStar {
                                 ArrayList<Double[]> pathListInMeters = new ArrayList<Double[]>();
                                 for (Node node : pathList) {
                                     Double tempNode[] = {
-                                            (double) (node.getX() - Constants.AStar.FIELD_X) / 100,
-                                            (double) (node.getY() - Constants.AStar.FIELD_Y) / 100
+                                            (double) (node.getY() - Constants.AStar.FIELD_X) / 100,
+                                            (double) (node.getX() - Constants.AStar.FIELD_Y) / 100
                                     };
                                     pathListInMeters.add(tempNode);
                                 }
