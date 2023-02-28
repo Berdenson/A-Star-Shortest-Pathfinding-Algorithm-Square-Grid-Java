@@ -45,10 +45,13 @@ public class AStar {
         }
         // creates the boolean obstacle matrix
         // TODO: Inputs the obstacles for the field (nonosquares), input your nono squares here.
-        generateNoNoZone(10, 15, 10, 15); /* placeholder/example */
+        generateNoNoZone(10, 10, 20, 20); /* placeholder/example */
     }
 
-    /** Creates a new pathfinding situation. Input should be in centimeters. */
+    /**
+     * Creates a new pathfinding situation. Input should be in centimeters.
+     * Values are inclusive.
+     */
     public AStar(int startX, int startY, int endX, int endY) {
         this.startX = startX;
         this.startY = startY;
@@ -171,7 +174,15 @@ public class AStar {
             }
         }
         return generatePath(
-                cell, startY, startX, endY, endX, Constants.AStar.FIELD_Y * 2, Constants.AStar.FIELD_X * 2, v, d);
+                cell,
+                startY,
+                startX,
+                endY,
+                endX,
+                Constants.AStar.FIELD_Y * 2,
+                Constants.AStar.FIELD_X * 2,
+                v,
+                d);
     }
 
     /**
