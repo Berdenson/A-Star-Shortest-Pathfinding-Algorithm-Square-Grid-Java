@@ -21,4 +21,5 @@ public class Path {
         this.pathList = pathList;
         this.generatedPath = true;
     }
+
 }

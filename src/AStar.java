@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -117,14 +115,13 @@ public class AStar {
                                 ArrayList<Double[]> pathListInMeters = new ArrayList<Double[]>();
                                 for (Node node : pathList) {
                                     Double tempNode[] = {
-//                                            (double) (node.getY() - Constants.AStar.FIELD_X) / 100,
-//                                            (double) (node.getX() - Constants.AStar.FIELD_Y) / 100
-                                            (double) node.getY(),
-                                            (double) node.getX()
+                                            (double) (node.getY() - Constants.AStar.FIELD_X) / 100,
+                                            (double) (node.getX() - Constants.AStar.FIELD_Y) / 100
                                     };
                                     pathListInMeters.add(tempNode);
                                 }
 
+                                Collections.reverse(pathListInMeters);
                                 currPath.set(new Path(pathListInMeters));
                             });
         }
