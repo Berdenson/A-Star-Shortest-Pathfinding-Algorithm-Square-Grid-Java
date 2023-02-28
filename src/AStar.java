@@ -117,8 +117,10 @@ public class AStar {
                                 ArrayList<Double[]> pathListInMeters = new ArrayList<Double[]>();
                                 for (Node node : pathList) {
                                     Double tempNode[] = {
-                                            (double) (node.getY() - Constants.AStar.FIELD_X) / 100,
-                                            (double) (node.getX() - Constants.AStar.FIELD_Y) / 100
+//                                            (double) (node.getY() - Constants.AStar.FIELD_X) / 100,
+//                                            (double) (node.getX() - Constants.AStar.FIELD_Y) / 100
+                                            (double) node.getY(),
+                                            (double) node.getX()
                                     };
                                     pathListInMeters.add(tempNode);
                                 }
